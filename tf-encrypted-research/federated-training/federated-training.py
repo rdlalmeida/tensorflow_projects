@@ -244,7 +244,7 @@ if __name__ == "__main__":
 
 # Import all models
 sys.path.append("../../")
-from models import *
+# from models import *
 
 if args.config != "local":
     # Config file was specified

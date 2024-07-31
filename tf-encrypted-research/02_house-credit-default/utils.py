@@ -15,8 +15,17 @@ def data_prep(filename):
     df.columns = df.columns.str.replace(",", "_")
 
     train_df = df[df["TARGET"].notnull()]
-    train_x_df = train_df.drop(columns=["TARGET", "SK_ID_CURR", "index"])
+    # My dataset has no "index" column!
+    # train_x_df = train_df.drop(columns=["TARGET", "SK_ID_CURR", "index"])
+
+    # This statement makes no sense and ends up removing all data from the variable!
+    # train_x_df = train_df.drop(columns=["TARGET", "SK_ID_CURR"])
+
+    # Let's try this instead. I have very little knowledge on machine learning, so what do I know?
+    train_x_df = train_df["SK_ID_CURR"]
     train_y_df = train_df["TARGET"]
+
+    return train_x_df, train_y_df
 
 
 def save_input(filename, output):

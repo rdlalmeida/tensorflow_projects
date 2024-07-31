@@ -7,7 +7,7 @@ import tensorflow as tf
 import tf2onnx
 from tensorflow import keras
 from tensorflow.keras import layers
-from tensorflow.python import errors_impl as errors
+from tensorflow.python.framework import errors_impl as errors
 from utils import data_prep
 from utils import read_one_row
 
@@ -19,7 +19,7 @@ parser.add_argument(
     default="-1",
     help="Do a prediction on specific row of input file",
 )
-default_path = os.getcwd()
+default_path = os.getcwd() + "/tf-encrypted-research/house-credit-default"
 
 default_input_file = default_path + "/submission_with_selected_features.csv"
 
@@ -74,10 +74,17 @@ def build_model(input_shape):
         ]
     )
 
+    # The Adam optimizer was moved to tensorflow.keras.optimizers.Adam
+    # model.compile(
+    #     loss="binary_crossentropy",
+    #     optimizer=tf.train.AdamOptimizer(),
+    #     metrics=["accuracy"],
+    # )
+
     model.compile(
         loss="binary_crossentropy",
-        optimizer=tf.train.AdamOptimizer(),
-        metrics=["accuracy"],
+        optimizer=keras.optimizers.Adam(),
+        metrics=["accuracy"]
     )
 
     return model
@@ -85,10 +92,13 @@ def build_model(input_shape):
 
 def train(train_x_df, train_y_df):
     """Train a logistic regressor on the dataset"""
-    x = list(train_x_df.column.values)
+    # Variable train_x_df is of type 'pandas.core.series.Series' and this type does not have a sub module
+    # 'column' but has one named 'values'. At this point I'm assuming stuff to see if I get anywhere
+    # x = list(train_x_df.column.values)
+    x = list(train_x_df.values)
     model = build_model(len(x))
 
-    os.makedirs(saved_models_path, exists_ok=True)
+    os.makedirs(saved_models_path, exist_ok=True)
 
     cp_callback = keras.callbacks.ModelCheckpoint(
         checkpoint_path, save_weights_only=True, save_best_only=True, verbose=1

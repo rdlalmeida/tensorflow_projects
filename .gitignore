@@ -132,3 +132,6 @@ dist
 # openfhe building dir
 openfhe/
 openfhe-python/
+
+# The super large datasets from tf-encrypted
+tf-encrypted-research/03_MNIST_tensorflow/dataset
